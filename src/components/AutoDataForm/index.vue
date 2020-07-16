@@ -70,7 +70,8 @@ export default {
         case 'datetime':
           type = 'date-picker'
           field.el = {
-            type: 'datetime'
+            type: 'datetime',
+            valueFormat: 'yyyy-MM-dd HH:mm:ss'
           }
           break
         case 'field':
