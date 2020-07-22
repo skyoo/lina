@@ -1,0 +1,13 @@
+{
+  "baseUrl": "http://localhost",
+  "viewportWidth": 1280,
+  "viewportHeight": 600,
+  "integrationFolder": "tests/e2e/integration",
+  "pluginsFile":"tests/e2e/plugins",
+  "supportFile":"tests/e2e/support",
+  "fixturesFolder":"tests/e2e/fixtures",
+  "videosFolder":"tests/e2e/report/videos",
+  "screenshotsFolder":"tests/e2e/report/screenshots",
+  "testFiles": "**/*.spec.js",
+  "chromeWebSecurity": false
+}
