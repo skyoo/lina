@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: jms            # 修改为项目的组
+  name: jms-lina     # 修改为    项目的名字-ingress
+spec:
+  rules:
+    - host: j2.clicki.cn        # 域名
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: jms-lina # 指向自己定义的svc
+              servicePort: 80
