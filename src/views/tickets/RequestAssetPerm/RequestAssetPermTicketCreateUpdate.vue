@@ -25,16 +25,19 @@ export default {
         actions: ['all', 'connect', 'updownload', 'upload_file', 'download_file']
       },
       fields: [
-        [this.$t('common.Basic'), ['title', 'org_id', 'assignees']],
-        [this.$t('tickets.RequestPerm'), ['ips', 'hostname', 'actions', 'date_start', 'date_expired']]
+        [this.$t('common.Basic'), ['title', 'org_id', 'assignees', 'comment']],
+        [this.$t('tickets.RequestPerm'), ['ips', 'hostname', 'system_user', 'actions', 'date_start', 'date_expired']]
 
       ],
       fieldsMeta: {
         ips: {
-          helpText: '请输入逗号分割的IP地址组'
+          helpText: this.$t('tickets.helpText.ips')
         },
         hostname: {
-          helpText: '支持模糊匹配'
+          helpText: this.$t('tickets.helpText.fuzzySearch')
+        },
+        system_user: {
+          helpText: this.$t('tickets.helpText.fuzzySearch')
         },
         actions: {
           label: this.$t('perms.Actions'),
@@ -78,6 +81,9 @@ export default {
       const ips = validValues.ips
       if (ips) {
         validValues.ips = ips.split(',')
+      }
+      if (ips === '') {
+        delete validValues['ips']
       }
       return this.$axios['post'](this.url, validValues)
     }

@@ -154,7 +154,7 @@ export default {
                   type: 'primary',
                   callback: function(val) {
                     this.MFAInfo.asset = val.cellValue
-                    if (this.MFAVerifyAt + this.MFA_TTl * 1000 > (new Date()).valueOf()) {
+                    if (!this.needMFAVerify) {
                       this.showMFADialog = true
                       this.MFAConfirmed = true
                       this.$axios.get(`/api/v1/assets/asset-user-auth-infos/${this.MFAInfo.asset}/`).then(res => {
@@ -239,7 +239,8 @@ export default {
   computed: {
     ...mapGetters([
       'MFA_TTl',
-      'MFAVerifyAt'
+      'MFAVerifyAt',
+      'publicSettings'
     ]),
     needMFAVerify() {
       if (!this.publicSettings.SECURITY_VIEW_AUTH_NEED_MFA) {
@@ -312,6 +313,7 @@ export default {
         key: ''
       }
       this.showDialog = false
+      this.$refs.ListTable.reloadTable()
     },
     Onchange(e) {
       const vm = this
@@ -351,6 +353,7 @@ export default {
         key: ''
       }
       this.showDialog = false
+      this.$refs.ListTable.reloadTable()
     }
   }
 }

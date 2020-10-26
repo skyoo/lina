@@ -1,0 +1,46 @@
+<template>
+  <div>
+    <!--    <el-link class="el-link" target="_blank" @click="goToTickets">{{ $t('route.Ticket') }}</el-link>-->
+    <el-badge :value="assignedTicketCount" :hidden="assignedTicketCount===0" size="mini" type="primary">
+      <el-link class="el-link" target="_blank" @click="goToTickets">{{ $t('route.Ticket') }}</el-link>
+    </el-badge>
+  </div>
+</template>
+
+<script>
+import { getTicketOpenCount } from '@/api/ticket'
+
+export default {
+  name: 'WebTerminal',
+  data() {
+    return {
+      assignedTicketCount: 0
+    }
+  },
+  created() {
+    this.ticketsOpenedCount()
+  },
+  methods: {
+
+    ticketsOpenedCount() {
+      getTicketOpenCount(1).then(data => {
+        this.assignedTicketCount = data.count
+      })
+    },
+    goToTickets() {
+      this.$router.push({ name: 'TicketList' })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.el-link {
+  color: #606266 !important;
+  font-size: 13px;
+  font-weight: 400
+}
+.el-badge ::v-deep .el-badge__content.is-fixed{
+  top:10px;
+}
+</style>

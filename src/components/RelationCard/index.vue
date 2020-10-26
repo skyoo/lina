@@ -6,6 +6,7 @@
           <Select2 ref="select2" v-model="select2.value" v-bind="select2" />
         </td>
       </tr>
+      <slot />
       <tr>
         <td colspan="2">
           <el-button :type="type" size="small" :loading="submitLoading" @click="addObjects">{{ $t('common.Add') }}</el-button>
@@ -21,7 +22,7 @@
           </td>
         </tr>
       </template>
-      <tr v-if="params.hasMore" class="item">
+      <tr v-if="params.hasMore && showHasMore" class="item">
         <td colspan="2">
           <el-button :type="type" size="small" style="width: 100%" @click="loadMore">
             <i class="fa fa-arrow-down" />
@@ -81,6 +82,10 @@ export default {
     value: {
       type: [Array, Number, String],
       default: () => []
+    },
+    showHasMore: {
+      type: Boolean,
+      default: true
     },
     performDelete: {
       type: Function,

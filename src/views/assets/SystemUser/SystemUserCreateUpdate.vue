@@ -6,6 +6,7 @@
 import GenericCreateUpdatePage from '@/layout/components/GenericCreateUpdatePage'
 import UploadKey from '@/components/UploadKey'
 import { Select2 } from '@/components'
+import { Required } from '@/components/DataForm/rules'
 
 // const asciiProtocols = ['ssh', 'telnet', 'mysql']
 const graphProtocols = ['vnc', 'rdp', 'k8s']
@@ -20,8 +21,8 @@ export default {
         priority: '20',
         protocol: 'ssh',
         username_same_with_user: false,
-        auto_generate_key: true,
-        auto_push: true,
+        auto_generate_key: false,
+        auto_push: false,
         sftp_root: 'tmp',
         sudo: '/bin/whoami',
         shell: '/bin/bash'
@@ -29,7 +30,7 @@ export default {
       fields: [
         [this.$t('common.Basic'), ['name', 'login_mode', 'username', 'username_same_with_user', 'priority', 'protocol']],
         [this.$t('assets.AutoPush'), ['auto_push', 'sudo', 'shell', 'home', 'system_groups']],
-        [this.$t('common.Auth'), ['auto_generate_key', 'password', 'private_key']],
+        [this.$t('common.Auth'), ['auto_generate_key', 'password', 'private_key', 'token']],
         [this.$t('common.Command filter'), ['cmd_filters']],
         [this.$t('common.Other'), ['sftp_root', 'comment']]
       ],
@@ -40,6 +41,14 @@ export default {
             if (form.protocol === 'k8s') {
               return true
             }
+          },
+          on: {
+            input: ([value], updateForm) => {
+              if (value === 'manual') {
+                updateForm({ auto_push: false })
+                updateForm({ auto_generate_key: false })
+              }
+            }
           }
         },
         username: {
@@ -48,19 +57,19 @@ export default {
           },
           on: {
             input: ([value], updateForm) => {
-              if (value) {
-                updateForm({ home: '/home/' + value })
-              }
+              updateForm({ home: `/home/${value}` })
             }
           },
-          rules: [{ required: true }],
+          rules: [Required],
           hidden: (form) => {
-            if (form.login_mode === 'manual') {
-              this.fieldsMeta.username.rules[0].required = false
+            if (form.login_mode === 'auto') {
+              this.fieldsMeta.username.rules = [Required]
             } else {
-              this.fieldsMeta.username.rules[0].required = true
+              this.fieldsMeta.username.rules[0].required = false
             }
-            if (form.username_same_with_user) {
+            if (!form.username_same_with_user) {
+              this.fieldsMeta.username.rules = [Required]
+            } else {
               this.fieldsMeta.username.rules[0].required = false
             }
           }
@@ -82,42 +91,47 @@ export default {
           helpText: this.$t('assets.UsernameHelpMessage'),
           hidden: (form) => {
             this.fieldsMeta.username.el.disabled = form.username_same_with_user
-            if (form.protocol === 'k8s') {
-              return true
-            }
-            return false
+            return form.protocol === 'k8s'
           }
         },
         auto_generate_key: {
           type: 'switch',
           label: this.$t('assets.AutoGenerateKey'),
           hidden: form => {
+            this.fieldsMeta.auto_generate_key.el.disabled = ['ssh', 'rdp'].indexOf(form.protocol) === -1 || form.login_mode === 'manual'
             if (JSON.stringify(this.$route.params) !== '{}') {
-              return true
-            }
-            if (form.login_mode !== 'auto') {
               return true
             }
             if (form.protocol === 'k8s') {
               return true
             }
+          },
+          el: {
+            disabled: false
           }
         },
         token: {
-          rules: [
-            { required: true }
-          ],
+          rules: [Required],
           el: {
-            type: 'password'
+            type: 'textarea',
+            autosize: { minRows: 3 }
           },
-          hidden: form => form.protocol !== 'k8s'
+          hidden: form => {
+            return form.protocol !== 'k8s'
+          }
         },
         protocol: {
-          rules: [
-            { required: true }
-          ],
+          rules: [Required],
           el: {
             style: 'width:100%'
+          },
+          on: {
+            input: ([value], updateForm) => {
+              if (['ssh', 'rdp'].indexOf(value) === -1) {
+                updateForm({ auto_push: false })
+                updateForm({ auto_generate_key: false })
+              }
+            }
           }
         },
         cmd_filters: {
@@ -132,33 +146,32 @@ export default {
           }
         },
         priority: {
-          rules: [
-            { required: true }
-          ],
+          rules: [Required],
           helpText: this.$t('assets.PriorityHelpMessage')
         },
         auto_push: {
           type: 'switch',
+          el: {
+            disabled: false
+          },
           hidden: form => {
-            if (form.login_mode !== 'auto') {
-              return true
-            }
-            if (form.protocol === 'k8s') {
-              return true
+            this.fieldsMeta.auto_push.el.disabled = ['ssh', 'rdp'].indexOf(form.protocol) === -1 || form.login_mode === 'manual'
+          },
+          on: {
+            input: ([value], updateForm) => {
+              if (!value) {
+                updateForm({ auto_generate_key: value })
+              }
             }
           }
         },
         sftp_root: {
-          rules: [
-            { required: true }
-          ],
+          rules: [Required],
           helpText: this.$t('assets.SFTPHelpMessage'),
           hidden: (item) => item.protocol !== 'ssh'
         },
         sudo: {
-          rules: [
-            { required: true }
-          ],
+          rules: [Required],
           helpText: this.$t('assets.SudoHelpMessage'),
           hidden: (item) => item.protocol !== 'ssh' || !item.auto_push
         },
@@ -176,9 +189,7 @@ export default {
         },
         shell: {
           hidden: (item) => item.protocol !== 'ssh' || !item.auto_push,
-          rules: [
-            { required: true }
-          ]
+          rules: [Required]
         },
         home: {
           label: this.$t('assets.Home'),
@@ -193,6 +204,16 @@ export default {
       },
       url: '/api/v1/assets/system-users/',
       authHiden: false
+    }
+  },
+  method: {
+
+  },
+  mounted() {
+    const params = this.$route.params
+    const method = params.id ? 'post' : 'put'
+    if (method === 'post') {
+      this.fieldsMeta.token.rules[0].required = false
     }
   }
 }

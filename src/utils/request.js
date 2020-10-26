@@ -1,6 +1,7 @@
 import axios from 'axios'
 import i18n from '@/i18n/i18n'
-
+import { getTokenFromCookie } from '@/utils/auth'
+import { refreshSessionIdAge } from '@/api/users'
 import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 
@@ -12,11 +13,12 @@ const service = axios.create({
 })
 
 function beforeRequestAddToken(config) {
-  if (store.getters.token) {
+  const csrfToken = getTokenFromCookie()
+  if (csrfToken) {
     // let each request carry token
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
-    config.headers['X-CSRFToken'] = store.getters.token
+    config.headers['X-CSRFToken'] = csrfToken
   }
   if (store.getters.currentOrg) {
     config.headers['X-JMS-ORG'] = store.getters.currentOrg.id
@@ -70,6 +72,9 @@ function ifBadRequest({ response, error }) {
   if (response.status === 400) {
     error.message = i18n.t('common.BadRequestErrorMsg')
   }
+  if (response.status === 403) {
+    error.message = i18n.t('common.BadRoleErrorMsg')
+  }
 }
 
 export function flashErrorMsg({ response, error }) {
@@ -87,6 +92,19 @@ export function flashErrorMsg({ response, error }) {
   }
 }
 
+let timer = null
+function refreshSessionAgeDelay(response) {
+  if (response.request.responseURL.indexOf('/users/profile/') !== -1) {
+    return
+  }
+  if (timer) {
+    clearTimeout(timer)
+  }
+  timer = setTimeout(function() {
+    refreshSessionIdAge()
+  }, 60 * 10 * 1000)
+}
+
 // response interceptor
 service.interceptors.response.use(
   /**
@@ -101,6 +119,7 @@ service.interceptors.response.use(
    */
   response => {
     // NProgress.done()
+    refreshSessionAgeDelay(response)
     const res = response.data
 
     if (response.config.raw === 1) {

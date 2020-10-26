@@ -222,6 +222,9 @@ export default {
     }
   },
   computed: {
+    loginConfirmEnabled() {
+      return this.$store.getters.publicSettings.LOGIN_CONFIRM_ENABLE
+    },
     detailItems() {
       return [
         {
@@ -238,7 +241,7 @@ export default {
         },
         {
           key: this.$t('users.Role'),
-          value: this.object.role_display
+          value: this.object.total_role_display
         },
         {
           key: this.$t('users.MFA'),

@@ -58,7 +58,7 @@ export default [
     component: Layout,
     meta: {
       permissions: [rolec.PERM_USE],
-      commandExecutionRequired: true
+      hidden: ({ settings }) => !settings.SECURITY_COMMAND_EXECUTION
     },
     children: [
       {
@@ -72,6 +72,16 @@ export default [
   {
     path: '/tickets',
     component: Layout,
+    hidden: true,
+    meta: {
+      title: i18n.t('route.Tickets'),
+      icon: 'history',
+      permissions: [rolec.PERM_USE],
+      licenseRequired: true,
+      hidden: ({ settings }) => {
+        return !settings.TICKETS_ENABLED
+      }
+    },
     children: [
       {
         path: '',
@@ -100,13 +110,7 @@ export default [
         meta: { title: i18n.t('route.TicketDetail'), activeMenu: '/tickets', permissions: [rolec.PERM_USE] },
         hidden: true
       }
-    ],
-    meta: {
-      title: i18n.t('route.Tickets'),
-      icon: 'history',
-      permissions: [rolec.PERM_USE],
-      licenseRequired: true
-    }
+    ]
   },
   {
     path: `external-luna`,

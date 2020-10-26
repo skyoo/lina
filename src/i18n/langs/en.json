@@ -31,7 +31,8 @@
     "custom_password": "Password",
     "Custom": "Custom",
     "cluster": "Cluster",
-    "kubernetes":"Kubernetes"
+    "kubernetes":"Kubernetes",
+    "clusterHelpTextMessage": "Tips: https://172.16.8.8:8443"
   },
   "assets": {
     "Action": "Action",
@@ -45,6 +46,9 @@
     "AssetListHelpMessage": "The left side is the asset tree, right click to create, delete, and change the tree node, authorization asset is also organized as a node, and the right side is the asset under that node\n",
     "AssetNumber": "Asset number",
     "AssetUserList": "Asset user list",
+    "TestGatewayTestConnection":"Test gateway test connection",
+    "TestGatewayHelpMessage": "If use nat, set the ssh real port",
+    "SshPort": "SSH Port",
     "Assets": "Assets",
     "Auth": "Auth",
     "AutoGenerateKey": "Auto generate ssh key",
@@ -140,7 +144,8 @@
     "GroupsHelpMessage": "Please fill in user groups, separated by commas if there are multiple user groups(Please fill in the existing user groups)",
     "HomeHelpMessage": "Default home directory: /home/system username",
     "Home": "Home",
-    "LinuxUserAffiliateGroup": "Linux user affiliate group"
+    "LinuxUserAffiliateGroup": "Linux user affiliate group",
+    "ipDomain": "IP(Domain)"
   },
   "audits": {
     "Hosts": "Host",
@@ -164,6 +169,7 @@
     "AddSuccessMsg": "Add success",
     "Auth": "Authorization",
     "BadRequestErrorMsg": "Bad request, please check again",
+    "BadRoleErrorMsg": "Bad request, no permission for this operation",
     "Basic": "Basic",
     "BasicInfo": "Basic info",
     "Cancel": "Cancel",
@@ -370,7 +376,7 @@
   },
   "perms": {
     "": "",
-    "Actions": "Actions",
+    "Actions": "Permission",
     "Asset": "Asset",
     "Basic": "Basic",
     "Exclude": "Exclude",
@@ -419,6 +425,7 @@
   },
   "route": {
     "": "",
+    "Ticket": "Tickets",
     "AdminUserCreate": "Admin user create",
     "AdminUserDetail": "Admin user detail",
     "AdminUserList": "Admin users",
@@ -457,14 +464,14 @@
     "DatabaseAppPermissionDetail": "Databases permissions detail",
     "DatabaseAppPermissionUpdate": "Databases permissions update",
     "DatabaseAppUpdate": "Database app update",
-    "KubernetesApp": "kubernetes apps",
-    "KubernetesAppCreate": "kubernetes app create",
-    "KubernetesAppDetail": "kubernetes app detail",
-    "KubernetesAppPermission": "kubernetes permissions",
-    "KubernetesAppPermissionCreate": "kubernetes permissions create",
-    "KubernetesAppPermissionDetail": "kubernetes permissions detail",
-    "KubernetesAppPermissionUpdate": "kubernetes permissions update",
-    "KubernetesAppUpdate": "kubernetes app update",
+    "KubernetesApp": "Kubernetes apps",
+    "KubernetesAppCreate": "Kubernetes app create",
+    "KubernetesAppDetail": "Kubernetes app detail",
+    "KubernetesAppPermission": "Kubernetes permissions",
+    "KubernetesAppPermissionCreate": "Kubernetes permissions create",
+    "KubernetesAppPermissionDetail": "Kubernetes permissions detail",
+    "KubernetesAppPermissionUpdate": "Kubernetes permissions update",
+    "KubernetesAppUpdate": "Kubernetes app update",
     "DomainCreate": "Domain create",
     "DomainDetail": "Domain detail",
     "DomainList": "Domains",
@@ -534,6 +541,7 @@
     "active": "active",
     "alive": "alive",
     "asset": "Asset",
+    "target": "Target",
     "bucket": "Bucket",
     "command": "Command",
     "commandStorage": "Command storage",
@@ -587,7 +595,9 @@
     "helpText": {
       "esUrl": "Tip: If you have multiple hosts, use comma (,) to split (eg: http://www.jumpserver.a.com,http://www.jumpserver.b.com)",
       "esIndex":"Es provides the default index: jumpserver",
-      "esDocType": "Es provides the default document type: command"
+      "esDocType": "Es provides the default document type: command",
+      "s3Endpoint": "S3: http://s3.{REGION_NAME}.amazonaws.com<br>S3(China): http://s3.{REGION_NAME}.amazonaws.com.cn<br>Example: http://s3.cn-north-1.amazonaws.com.cn",
+      "ossEndpoint": "OSS: http://{REGION_NAME}.aliyuncs.com<br>Example: http://oss-cn-hangzhou.aliyuncs.com"
     }
   },
   "setting": {
@@ -712,7 +722,10 @@
     "userGuideUrl": "User Guide URL",
     "username": "Username",
     "usernamePlaceholder": "Please input username",
-    "refreshLdapCache":"Refreshing Ldap cache "
+    "refreshLdapCache":"Refreshing Ldap cache ",
+    "LicenseExpired": "License expired",
+    "LicenseWillBe": "License will expire at ",
+    "Expire": ""
   },
   "settings": {
     "setting": "Setting"
@@ -743,10 +756,14 @@
     "Asset": "Asset",
     "SystemUser": "System user",
     "Applicant": "Applicant",
-    "Pending": "Pending",
+    "Pending": "Open",
     "Approved": "Approved",
     "Rejected": "Rejected",
-    "Closed": "Closed"
+    "Closed": "Closed",
+    "helpText": {
+      "ips": "Enter the IP address group, separated by commas",
+      "fuzzySearch": "Support for fuzzy search"
+    }
   },
   "tree": {
     "AddAssetToNode": "Add asset to node",
@@ -762,6 +779,7 @@
   },
   "users": {
     "Account": "Account",
+    "Existing":"Existing",
     "Authentication": "Account",
     "Comment": "Comment",
     "ConfirmPassword": "Confirm password",
@@ -774,11 +792,19 @@
     "Email": "Email",
     "FingerPrint": "Fingerprint",
     "FirstLogin": "First login",
+    "InviteUser": "Invite user",
+    "InviteUserInOrg": "Invite user in this org",
+    "Invite": "Invite",
     "Guide": "Guide",
+    "OrgUser": "Org User",
+    "OrgAdmin": "Org Admin",
+    "OrgAuditor": "Org Auditor",
+
     "HelpText": {
       "MFAOfUserFirstLoginPersonalInformationImprovementPage": "Enable multi-factor authentication to make the account more secure <br/> After is enabled, you will enter the multi-factor authentication binding process on your next login <br/> You can also bind directly in (personal information -> fast modifier -> modifier multiple factor Settings)",
       "MFAOfUserFirstLoginUserGuidePage": "To protect the security of you and the company <br/> please properly keep your account, password, key and other important and sensitive information <br/> (e.g., set a complex password and enable multi-factor authentication)",
-      "SSHKeyOfProfileSSHUpdatePage": "Copy your public key here"
+      "SSHKeyOfProfileSSHUpdatePage": "Copy your public key here",
+      "OrgRoleHelpText": "Organizational roles are the user's role in the current organization"
     },
     "IAgree": "I agree",
     "ImprovePersonalInformation": "Improve personal information",
@@ -884,6 +910,7 @@
       "Username": "Username"
     },
     "Cloud": {
+      "HostnameStrategy": "Used to produce the asset hostname. For example, 1. Instance name (instanceDemo)；2. Instance name and Partial IP (instanceDemo-250.1)",
       "IsAlwaysUpdate": "Asset info is kept up-to-date",
       "AccountCreate": "Create account",
       "AccountList": "Account list",
@@ -954,7 +981,9 @@
       "OrganizationMembership": "Organization membership",
       "DeleteOrgTitle":"Please ensure that the following information in the organization has been deleted",
       "DeleteOrgMsg":"User list、User group、Asset list、Domain list、Admin user、System user、Labels、Asset permission",
-      "OrgRole": "Org role"
+      "OrgRole": "Org role",
+      "CreateOrgMsg": "Please go to Organization Details to add users",
+      "AddOrgMembers": "Add organization members"
     },
     "RestoreButton": "Restore Default",
     "SubscriptionID": "Subscription ID",
@@ -971,9 +1000,9 @@
     "loginImageTip": "Tips: This will be displayed on the enterprise user login page. (suggest image size: 492px*472px)",
     "loginTitle": "Title of login page",
     "loginTitleTip": "Tips: This will be displayed on the enterprise user login page. (eg: Welcome to the JumpServer open source fortress)",
-    "logoIndex": "Logo of management page",
+    "logoIndex": "Logo (It contains text)",
     "logoIndexTip": "Tips: This will appear at the top left of the administration page. (suggest image size: 185px*55px)",
-    "logoLogout": "Logo of logout page",
+    "logoLogout": "Logo (It contains no text)",
     "logoLogoutTip": "Tips: This will be displayed on the enterprise user logout page. (suggest image size: 82px*82px)",
     "restoreDialogMessage": "This will restore default Settings of the interface !!!",
     "restoreDialogTitle": "Are you sure?",

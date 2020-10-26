@@ -140,8 +140,12 @@ export const allRoleRoutes = [
     component: Layout,
     redirect: '/tickets/tickets/',
     children: TicketsRoutes,
+    hidden: true,
     meta: {
       licenseRequired: true
+      // hidden: ({ settings }) => {
+      //   return !settings.TICKETS_ENABLED
+      // }
     }
   },
   {
