@@ -2,7 +2,7 @@
   <div>
     <TableAction :table-url="iTableConfig.url" :search-table="search" :date-pick="handleDateChange" v-bind="headerActions" :selected-rows="selectedRows" :reload-table="reloadTable" />
     <IBox class="table-content">
-      <AutoDataTable ref="dataTable" :config="iTableConfig" @selection-change="handleSelectionChange" v-on="$listeners" />
+      <AutoDataTable ref="dataTable" :filter-table="filter" :config="iTableConfig" @selection-change="handleSelectionChange" v-on="$listeners" />
     </IBox>
   </div>
 </template>
@@ -13,6 +13,7 @@ import IBox from '../IBox'
 import TableAction from './TableAction'
 import Emitter from '@/mixins/emitter'
 import deepmerge from 'deepmerge'
+
 export default {
   name: 'ListTable',
   components: {
@@ -41,11 +42,24 @@ export default {
     }
   },
   computed: {
+
     dataTable() {
       return this.$refs.dataTable.$refs.dataTable
     },
+    hasCreateAction() {
+      const hasLeftAction = this.headerActions.hasLeftActions
+      if (hasLeftAction === false) {
+        return false
+      }
+      const hasCreate = this.headerActions.hasCreate
+      if (hasCreate === false) {
+        return false
+      }
+      return true
+    },
     iTableConfig() {
       const config = deepmerge(this.tableConfig, { extraQuery: this.extraQuery })
+      this.$log.debug('Header actions', this.headerActions)
       this.$log.debug('ListTable: iTableConfig change', config)
       return config
     }
@@ -56,9 +70,13 @@ export default {
         this.$log.debug('ListTable: found extraQuery change')
       },
       deep: true
+    },
+    tableColConfig: {
+      handler() {
+        this.$log.debug('ListTable: found colConfig change')
+      },
+      deep: true
     }
-  },
-  mounted() {
   },
   methods: {
     handleSelectionChange(val) {
@@ -69,6 +87,9 @@ export default {
     },
     search(attrs) {
       return this.dataTable.search(attrs, true)
+    },
+    filter(attrs) {
+      this.$refs.dataTable.$refs.dataTable.search(attrs, true)
     },
     handleDateChange(attrs) {
       this.$set(this.extraQuery, 'date_from', attrs[0].toISOString())
@@ -92,28 +113,28 @@ export default {
 
 <style lang="scss" scoped>
 
-  .table-content {
-    margin-top: 10px;
+.table-content {
+  margin-top: 10px;
 
-    & >>> .el-card__body {
-      padding: 0;
-    }
-    & >>> .el-table__header thead > tr > th {
-      background-color: white;
-    }
-
-    /*& >>> .el-table--striped .el-table__body tr.el-table__row--striped td {*/
-      /*background: white;*/
-    /*}*/
-
-    /*& >>> .el-table th, .el-table tr  {*/
-      /*background-color: red;*/
-      /*!*background-color: #FAFAFA;*!*/
-    /*}*/
+  & >>> .el-card__body {
+    padding: 0;
+  }
+  & >>> .el-table__header thead > tr > th {
+    background-color: white;
   }
 
-  //修改颜色
-  // .el-button--text{
-  //   color: #409EFF;
-  // }
+  /*& >>> .el-table--striped .el-table__body tr.el-table__row--striped td {*/
+  /*background: white;*/
+  /*}*/
+
+  /*& >>> .el-table th, .el-table tr  {*/
+  /*background-color: red;*/
+  /*!*background-color: #FAFAFA;*!*/
+  /*}*/
+}
+
+//修改颜色
+// .el-button--text{
+//   color: #409EFF;
+// }
 </style>

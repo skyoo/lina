@@ -1,5 +1,5 @@
 <template>
-  <GenericCreateUpdatePage v-bind="$data" />
+  <GenericCreateUpdatePage v-bind="$data" :initial="initial" />
 </template>
 
 <script>
@@ -22,7 +22,10 @@ export default {
       url: '/api/v1/xpack/cloud/accounts/',
       fieldsMeta: {
         provider: {
-          rules: [Required]
+          rules: [Required],
+          el: {
+            disabled: true
+          }
         },
         access_key_id: {
           rules: [
@@ -40,6 +43,11 @@ export default {
       },
       updateSuccessNextRoute: { name: 'CloudCenter' },
       createSuccessNextRoute: { name: 'CloudCenter' }
+    }
+  },
+  computed: {
+    initial() {
+      return this.$route.query
     }
   }
 }

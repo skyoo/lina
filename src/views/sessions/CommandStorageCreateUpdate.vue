@@ -8,6 +8,7 @@
       :create-success-next-route="successUrl"
       :clean-form-value="cleanFormValue"
       :object="formData"
+      :has-detail-in-msg="false"
       :fields-meta="fieldsMeta"
     />
   </div>
@@ -59,13 +60,16 @@ export default {
         doc_type: {
           label: this.$t('sessions.docType'),
           rules: [Required],
+          el: {
+            disabled: true
+          },
           helpText: this.$t('sessions.helpText.esDocType')
         }
       },
       fieldsMap: {
         es: [[this.$t('common.Basic'), ['name', 'type', 'hosts', 'index', 'doc_type', 'comment']]]
       },
-      url: '/api/v1/terminal/command-storages/'
+      url: this.$route.params.id ? '/api/v1/terminal/command-storages/' : `/api/v1/terminal/command-storages/?type=es`
     }
   },
   computed: {
@@ -73,7 +77,7 @@ export default {
       return this.fieldsMap[this.currentType]
     },
     initial() {
-      return { type: this.currentType }
+      return { type: this.currentType, doc_type: 'command' }
     },
     currentType() {
       const params = this.$route.params
@@ -134,9 +138,9 @@ export default {
         type: 'es',
         comment: value.comment,
         meta: {
-          es_hosts: host_array,
-          es_index: value.index,
-          es_doc_type: value.doc_type
+          HOSTS: host_array,
+          INDEX: value.index,
+          DOC_TYPE: value.doc_type
         }
       }
     }

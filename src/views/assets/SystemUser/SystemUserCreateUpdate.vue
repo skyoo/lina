@@ -30,7 +30,7 @@ export default {
       fields: [
         [this.$t('common.Basic'), ['name', 'login_mode', 'username', 'username_same_with_user', 'priority', 'protocol']],
         [this.$t('assets.AutoPush'), ['auto_push', 'sudo', 'shell', 'home', 'system_groups']],
-        [this.$t('common.Auth'), ['auto_generate_key', 'password', 'private_key', 'token']],
+        [this.$t('common.Auth'), ['auto_generate_key', 'update_password', 'password', 'private_key', 'token', 'ad_domain']],
         [this.$t('common.Command filter'), ['cmd_filters']],
         [this.$t('common.Other'), ['sftp_root', 'comment']]
       ],
@@ -72,6 +72,10 @@ export default {
             } else {
               this.fieldsMeta.username.rules[0].required = false
             }
+            if (['mysql', 'postgresql', 'mariadb', 'oracle'].indexOf(form.protocol) !== -1) {
+              this.fieldsMeta.username.rules = [Required]
+              this.fieldsMeta.username.rules[0].required = true
+            }
           }
         },
         private_key: {
@@ -92,6 +96,9 @@ export default {
           hidden: (form) => {
             this.fieldsMeta.username.el.disabled = form.username_same_with_user
             return form.protocol === 'k8s'
+          },
+          el: {
+            disabled: false
           }
         },
         auto_generate_key: {
@@ -134,6 +141,11 @@ export default {
             }
           }
         },
+        ad_domain: {
+          label: this.$t('assets.AdDomain'),
+          hidden: (form) => ['rdp'].indexOf(form.protocol) === -1,
+          helpText: this.$t('assets.AdDomainHelpText')
+        },
         cmd_filters: {
           component: Select2,
           hidden: (form) => graphProtocols.indexOf(form.protocol) !== -1,
@@ -175,16 +187,29 @@ export default {
           helpText: this.$t('assets.SudoHelpMessage'),
           hidden: (item) => item.protocol !== 'ssh' || !item.auto_push
         },
+        update_password: {
+          label: this.$t('users.UpdatePassword'),
+          type: 'checkbox',
+          hidden: (formValue) => {
+            if (formValue.update_password || formValue.protocol === 'k8s') {
+              return true
+            }
+            if (formValue.login_mode === 'manual') {
+              return true
+            }
+            return !this.$route.params.id
+          }
+        },
         password: {
           helpText: this.$t('assets.PasswordHelpMessage'),
           hidden: form => {
-            if (form.login_mode !== 'auto') {
+            if (form.login_mode !== 'auto' || form.protocol === 'k8s' || form.auto_generate_key) {
               return true
             }
-            if (form.protocol === 'k8s') {
-              return true
+            if (!this.$route.params.id) {
+              return false
             }
-            return form.auto_generate_key === true
+            return !form.update_password
           }
         },
         shell: {
@@ -211,9 +236,10 @@ export default {
   },
   mounted() {
     const params = this.$route.params
-    const method = params.id ? 'post' : 'put'
-    if (method === 'post') {
+    const method = params.id ? 'update' : 'create'
+    if (method === 'update') {
       this.fieldsMeta.token.rules[0].required = false
+      this.fieldsMeta.username_same_with_user.el.disabled = true
     }
   }
 }

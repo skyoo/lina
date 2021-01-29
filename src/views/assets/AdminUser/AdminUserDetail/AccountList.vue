@@ -1,23 +1,19 @@
-<template><div>
-  <el-row :gutter="20">
-    <el-col :span="16">
-      <AssetUserTable :url="assetUserUrl" :has-import="false" />
-    </el-col>
-    <el-col :span="8">
-      <QuickActions type="primary" :actions="quickActions" />
-    </el-col>
-  </el-row>
-</div>
+<template>
+  <div>
+    <el-row :gutter="20">
+      <el-col :span="16">
+        <AssetUserTable :url="assetUserUrl" :has-import="false" />
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-import QuickActions from '@/components/QuickActions/index'
 import { AssetUserTable } from '@/components'
 
 export default {
   name: 'Detail',
   components: {
-    QuickActions,
     AssetUserTable
   },
   props: {

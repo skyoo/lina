@@ -9,6 +9,7 @@
       :selected-rows="updateSelectedDialogSetting.selectedRows"
       :form-setting="updateSelectedDialogSetting.formSetting"
       :dialog-setting="updateSelectedDialogSetting.dialogSetting"
+      @update="handleDialogUpdate"
     />
     <InviteUsersDialog :setting="InviteDialogSetting" @close="handleInviteDialogClose" />
   </div>
@@ -161,6 +162,7 @@ export default {
             date_expired: getDayFuture(36500, new Date()).toISOString()
           },
           fields: ['groups', 'date_expired', 'comment'],
+          hasSaveContinue: false,
           url: '/api/v1/users/users/',
           fieldsMeta: {
             groups: {
@@ -263,11 +265,11 @@ export default {
             }
             this.$message.success(successMsg)
           } catch (error) {
-            let errorMsg = this.$t('common.bulkDeleteErrorMsg')
-            if (!this.currentOrgIsDefault) {
-              errorMsg = this.$t('common.bulkRemoveErrorMsg')
-            }
-            this.$message.error(errorMsg + error)
+            // let errorMsg = this.$t('common.bulkDeleteErrorMsg')
+            // if (!this.currentOrgIsDefault) {
+            //   errorMsg = this.$t('common.bulkRemoveErrorMsg')
+            // }
+            // this.$message.error(errorMsg + error)
           } finally {
             instance.confirmButtonLoading = false
           }
@@ -286,6 +288,9 @@ export default {
     },
     handleInviteDialogClose() {
       this.InviteDialogSetting.InviteDialogVisible = false
+      this.$refs.GenericListPage.$refs.ListTable.reloadTable()
+    },
+    handleDialogUpdate() {
       this.$refs.GenericListPage.$refs.ListTable.reloadTable()
     }
   }

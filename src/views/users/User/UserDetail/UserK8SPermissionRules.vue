@@ -4,8 +4,9 @@
 
 <script>
 import ListTable from '@/components/ListTable'
+
 export default {
-  name: 'UserRemoteAppPermissionRules',
+  name: 'UserDatabasePermissionRules',
   components: {
     ListTable
   },
@@ -18,44 +19,36 @@ export default {
   data() {
     return {
       tableConfig: {
-        url: `/api/v1/perms/remote-app-permissions/?user_id=${this.object.id}&draw=1`,
-        columns: ['name', 'users', 'user_groups', 'remote_apps', 'system_users', 'is_valid', 'actions'],
+        url: `/api/v1/perms/k8s-app-permissions/?user_id=${this.object.id}&draw=1`,
+        columns: ['name', 'users_amount', 'user_groups_amount', 'k8s_apps_amount', 'system_users_amount', 'is_valid', 'actions'],
         columnsMeta: {
           name: {
             formatterArgs: {
-              route: 'RemoteAppPermissionDetail'
+              route: 'KubernetesAppPermissionDetail'
             }
           },
-          users: {
+          users_amount: {
             label: this.$t('users.Users'),
-            formatter(row, col, colValue) {
-              return colValue.length
-            }
+            width: '110px'
           },
-          user_groups: {
+          user_groups_amount: {
             label: this.$t('users.UserGroups'),
-            formatter(row, col, colValue) {
-              return colValue.length
-            }
+            width: '110px'
           },
-          remote_apps: {
-            label: this.$t('assets.RemoteApps'),
-            formatter(row, col, colValue) {
-              return colValue.length
-            }
+          k8s_apps_amount: {
+            label: this.$t('perms.KubernetesApp'),
+            width: '110px'
           },
-          system_users: {
+          system_users_amount: {
             label: this.$t('assets.SystemUsers'),
-            formatter(row, col, colValue) {
-              return colValue.length
-            }
+            width: '110px'
           },
           actions: {
             formatterArgs: {
-              updateRoute: 'RemoteAppPermissionUpdate',
+              updateRoute: 'KubernetesAppPermissionUpdate',
               performDelete: ({ row, col }) => {
                 const id = row.id
-                const url = `/api/v1/perms/remote-app-permissions/${id}/?user_id=${this.object.id}&draw=1`
+                const url = `/api/v1/perms/k8s-app-permissions/${id}/?user_id=${this.object.id}&draw=1`
                 return this.$axios.delete(url)
               }
             }

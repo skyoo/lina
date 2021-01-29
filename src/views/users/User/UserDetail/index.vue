@@ -10,9 +10,11 @@
 import { GenericDetailPage } from '@/layout/components'
 import UserAssetPermissionRules from './UserAssetPermissionRules'
 import UserGrantedAssets from './UserGrantedAssets'
-import UserGrantedRemoteApps from './UserGrantedRemoteApps'
-import UserRemoteAppPermissionRules from './UserRemoteAppPermissionRules'
+import UserGrantedApplications from './UserGrantedApplications'
+import UserApplicationPermissionRules from './UserApplicationsPermissionRules'
 import UserGrantedDatabases from './UserGrantedDatabases'
+import UserGrantedK8Ss from './UserGrantedK8Ss'
+import UserK8SPermissionRules from './UserK8SPermissionRules'
 import UserDatabasePermissionRules from './UserDatabasePermissionRules'
 import UserInfo from './UserInfo'
 
@@ -22,10 +24,12 @@ export default {
     UserInfo,
     UserGrantedAssets,
     UserAssetPermissionRules,
-    UserGrantedRemoteApps,
-    UserRemoteAppPermissionRules,
+    UserGrantedApplications,
+    UserApplicationPermissionRules,
     UserGrantedDatabases,
-    UserDatabasePermissionRules
+    UserDatabasePermissionRules,
+    UserK8SPermissionRules,
+    UserGrantedK8Ss
   },
   data() {
     const vm = this
@@ -51,21 +55,29 @@ export default {
             name: 'UserAssetPermissionRules'
           },
           {
-            title: this.$t('users.tabs.grantedRemoteApps'),
-            name: 'UserGrantedRemoteApps'
+            title: this.$t('users.tabs.grantedApplications'),
+            name: 'UserGrantedApplications'
           },
           {
-            title: this.$t('users.tabs.remoteAppPermissionRules'),
-            name: 'UserRemoteAppPermissionRules'
-          },
-          {
-            title: this.$t('users.tabs.grantedDatabases'),
-            name: 'UserGrantedDatabases'
-          },
-          {
-            title: this.$t('users.tabs.databasePermissionRules'),
-            name: 'UserDatabasePermissionRules'
+            title: this.$t('users.tabs.ApplicationPermissionRules'),
+            name: 'UserApplicationPermissionRules'
           }
+          // {
+          //   title: this.$t('users.tabs.grantedDatabases'),
+          //   name: 'UserGrantedDatabases'
+          // },
+          // {
+          //   title: this.$t('users.tabs.databasePermissionRules'),
+          //   name: 'UserDatabasePermissionRules'
+          // },
+          // {
+          //   title: this.$t('users.tabs.grantedK8Ss'),
+          //   name: 'UserGrantedK8Ss'
+          // },
+          // {
+          //   title: this.$t('users.tabs.k8sPermissionRules'),
+          //   name: 'UserK8SPermissionRules'
+          // }
         ]
       }
     }

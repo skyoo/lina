@@ -139,8 +139,6 @@ export default {
         treeNode.name = treeNode.name + ' (' + assetsAmount + ')'
         this.zTree.updateNode(treeNode)
         this.$message.success(this.$t('common.updateSuccessMsg'))
-      }).catch(error => {
-        this.$message.error(this.$t('common.updateErrorMsg' + ' ' + error))
       })
     },
     onBodyMouseDown: function(event) {
@@ -159,6 +157,11 @@ export default {
       y -= (offset.top + scrollTop) / 3 - 10
       x += document.body.scrollLeft
       y += document.body.scrollTop + document.documentElement.scrollTop
+
+      if (y + $(`#${rMenuID} ul`).height() >= window.innerHeight) {
+        y -= $(`#${rMenuID} ul`).height()
+      }
+
       this.rMenu.css({ 'top': y + 'px', 'left': x + 'px', 'visibility': 'visible' })
       $(`#${rMenuID} ul`).show()
       $('body').bind('mousedown', this.onBodyMouseDown)
@@ -237,10 +240,7 @@ export default {
       })
     },
     refresh: function() {
-      this.$axios.post(
-        '/api/v1/assets/nodes/00000000-0000-0000-0000-000000000000/tasks/',
-        { action: 'refresh_cache' }
-      )
+
     },
     getSelectedNodes: function() {
       return this.zTree.getSelectedNodes()

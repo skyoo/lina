@@ -8,7 +8,6 @@
       <RelationCard type="info" style="margin-top: 15px" v-bind="groupRelationConfig" />
     </el-col>
   </el-row>
-
 </template>
 
 <script>
@@ -17,7 +16,7 @@ import RelationCard from '@/components/RelationCard'
 import { DeleteActionFormatter } from '@/components/ListTable/formatters/index'
 
 export default {
-  name: 'DatabaseAppPermissionUser',
+  name: 'RemoteAppPermissionUser',
   components: {
     ListTable,
     RelationCard
@@ -31,7 +30,7 @@ export default {
   data() {
     return {
       tableConfig: {
-        url: `/api/v1/perms/database-app-permissions/${this.object.id}/users/all/`,
+        url: `/api/v1/perms/application-permissions/${this.object.id}/users/all/`,
         columns: [
           'user_display', 'delete_action'
         ],
@@ -47,7 +46,7 @@ export default {
             width: 150,
             objects: this.object.users,
             formatter: DeleteActionFormatter,
-            deleteUrl: `/api/v1/perms/database-app-permissions-users-relations/?databaseapppermission=${this.object.id}&user=`
+            deleteUrl: `/api/v1/perms/application-permissions-users-relations/?applicationpermission=${this.object.id}&user=`
           }
         },
         tableAttrs: {
@@ -55,15 +54,9 @@ export default {
         }
       },
       headerActions: {
-        hasSearch: true,
-        hasRefresh: true,
-        hasLeftActions: true,
-        hasRightActions: true,
+        hasLeftActions: false,
         hasExport: false,
-        hasImport: false,
-        hasCreate: false,
-        hasBulkDelete: false,
-        hasBulkUpdate: false
+        hasImport: false
       },
       userRelationConfig: {
         icon: 'fa-user',
@@ -77,14 +70,13 @@ export default {
         hasObjectsId: this.object.users,
         showHasObjects: false,
         performAdd: (items) => {
-          const relationUrl = `/api/v1/perms/database-app-permissions-users-relations/`
           const objectId = this.object.id
-          const data = items.map(v => {
-            return {
-              databaseapppermission: objectId,
-              user: v.value
-            }
-          })
+          const relationUrl = `/api/v1/perms/application-permissions-users-relations/`
+          const usersId = items.map(v => v.value)
+          const data = []
+          for (const user of usersId) {
+            data.push({ applicationpermission: objectId, user: user })
+          }
           return this.$axios.post(relationUrl, data)
         },
         onAddSuccess: (objects, that) => {
@@ -103,15 +95,12 @@ export default {
         },
         hasObjectsId: this.object.user_groups,
         performAdd: (items) => {
-          const relationUrl = `/api/v1/perms/database-app-permissions-user-groups-relations/`
           const objectId = this.object.id
-          const data = items.map(v => {
-            return {
-              databaseapppermission: objectId,
-              usergroup: v.value
-            }
-          })
-          return this.$axios.post(relationUrl, data)
+          const relationUrl = `/api/v1/perms/application-permissions/${objectId}/`
+          const objectRelationUserGroups = this.object.user_groups
+          items.map(v => objectRelationUserGroups.push(v.value))
+          const data = { user_groups: objectRelationUserGroups }
+          return this.$axios.patch(relationUrl, data)
         },
         onAddSuccess: (objects, that) => {
           this.$log.debug('Select value', that.select2.value)
@@ -122,9 +111,11 @@ export default {
         },
         performDelete: (item) => {
           const objectId = this.object.id
-          const itemId = item.value
-          const relationUrl = `/api/v1/perms/database-app-permissions-user-groups-relations/?databaseapppermission=${objectId}&usergroup=${itemId}`
-          return this.$axios.delete(relationUrl)
+          const relationUrl = `/api/v1/perms/application-permissions/${objectId}/`
+          const objectOldRelationUserGroups = this.object.user_groups
+          const objectNewRelationUserGroups = objectOldRelationUserGroups.filter(v => v !== item.value)
+          const data = { user_groups: objectNewRelationUserGroups }
+          return this.$axios.patch(relationUrl, data)
         },
         onDeleteSuccess: (obj, that) => {
           const theRemoveIndex = that.iHasObjects.findIndex((v) => v.value === obj.value)

@@ -5,7 +5,7 @@
 <script>
 import ListTable from '@/components/ListTable'
 export default {
-  name: 'UserGrantedRemoteApps',
+  name: 'UserGrantedApplications',
   components: {
     ListTable
   },
@@ -18,17 +18,22 @@ export default {
   data() {
     return {
       tableConfig: {
-        url: `/api/v1/perms/users/${this.object.id}/remote-apps/?draw=1`,
-        columns: ['name', 'type', 'asset', 'comment'],
+        url: `/api/v1/perms/users/${this.object.id}/applications/`,
+        columns: ['name', 'category_display', 'type', 'asset', 'comment'],
         columnsMeta: {
           name: {
             formatterArgs: {
               route: 'RemoteAppDetail'
             }
           },
+          type: {
+            displayKey: 'type_display',
+            width: '140px'
+          },
           asset: {
+            label: '资产',
             formatter(row) {
-              return row.asset_info.hostname
+              return row.attrs.host || row.attrs.hostname
             }
           }
         }

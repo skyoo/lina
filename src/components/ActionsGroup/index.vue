@@ -1,7 +1,7 @@
 <template>
   <div :class="grouped ? 'el-button-group' : ''">
     <el-button v-for="item in iActions" :key="item.name" :size="size" v-bind="item" @click="handleClick(item.name)">
-      <el-tooltip v-if="['actionExport', 'actionImport', 'actionRefresh'].indexOf(item.name) !== -1" effect="dark" :content="item.tip" placement="top">
+      <el-tooltip v-if="item.tip" effect="dark" :content="item.tip" placement="top">
         <i v-if="item.fa" :class="'fa ' + item.fa" />{{ item.title }}
       </el-tooltip>
       <span v-else>
@@ -119,6 +119,11 @@ export default {
         if (!has) {
           continue
         }
+        // 是否有分割线
+        const divided = this.checkItem(action, 'divided', false)
+        delete action['divided']
+        action.divided = divided
+
         // 是否是disabled
         const can = this.checkItem(action, 'can')
         delete action['can']

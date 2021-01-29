@@ -83,6 +83,19 @@ export default {
           name: 'AccountUpdate',
           hidden: true,
           meta: { title: i18n.t('xpack.Cloud.AccountUpdate'), action: 'update', activeMenu: '/xpack/cloud' }
+        }, {
+          path: 'azure/account/create',
+          component: () => import('@/views/xpack/Cloud/Account/AzureAccountCreateUpdate'),
+          name: 'AzureAccountCreate',
+          hidden: true,
+          meta: { title: i18n.t('xpack.Cloud.AccountCreate'), action: 'create', activeMenu: '/xpack/cloud' }
+        },
+        {
+          path: 'azure/account/:id/update',
+          component: () => import('@/views/xpack/Cloud/Account/AzureAccountCreateUpdate'),
+          name: 'AzureAccountUpdate',
+          hidden: true,
+          meta: { title: i18n.t('xpack.Cloud.AccountUpdate'), action: 'update', activeMenu: '/xpack/cloud' }
         },
         {
           path: 'accounts/:id/',
@@ -224,6 +237,12 @@ export default {
           hidden: true
         }
       ]
+    },
+    {
+      path: 'system-monitor',
+      component: () => import('@/views/xpack/SystemMonitor/index.vue'),
+      name: 'SystemMonitor',
+      meta: { title: i18n.t('xpack.SystemMonitor'), permissions: [rolec.PERM_SUPER] }
     }
   ]
 }
